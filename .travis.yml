@@ -1,0 +1,29 @@
+language: python
+python:
+- '3.6'
+services:
+- docker
+env:
+- TORTUGA_BUILD_DOCKER="true"
+before_install:
+- docker pull puppet/puppet-agent
+install:
+- pip install tox
+- git clone https://github.com/UnivaCorporation/tortuga.git tortuga-base
+- cd tortuga-base/
+- pip install -r requirements.txt
+- paver build
+- cd ../
+- build-kit
+script:
+- echo "Done"
+deploy:
+  provider: releases
+  api_key:
+    secure: frlGJvXxFuA/jSIzm2xiB04JxUJ37rIVn0o6tqeUb4s5H+xatSAWNeG9eL2eClW3li8REakTzy8IGWE5ky8jsI2NwGqWSnYhfCcJ88BIZsurraIBUjCj90TzyryUoG24LEd6p6L4AM1Yepu+TkJa+qd28+4/R5D3DOf+1MJ+opVek462WtHUf7FjotBll5qIXHyc0AmP46tU/j9HBYdc+W0Emf2mtAuEis55CN2A2D+4k8Xjhhk83ZY+JWt914KXlpFCc70UxTmmgkIuQga7+Z+aQqD1aLlTy/KZmwo6UV+mg0NFOXzXL5wszrIVjuQiGIu00JX6nMaIGeJaGJHDXDpXXAe3Trzs+phGwpesc7l8OCz3RTnhngEnfI7sOchDZ4O5peGiJ5nDZw7lAxy/PLuKm5Y9K+ShQsXBGOLUG+u4Pb+r7p5ENTmzfyaW9v1GV2TPTn8lrWqM2TDNcLEhOrUy89+41ueob3Yq8rxJu2OU0FyAp0u8aM/FFn8LTKxfUc4Rjdvd6xVIiJ2Giu8PDIDBhVypwAU5KBu0pyt6rupFrklb5DsVMY7jjQ8n3hQcOn0fY5xOIGNLpl+R9t27/mZvkAruGA6djEaWzJtvSZPmmsADAIdhz8+rZPCdrH/OkSmBIDeYWL84Qhe4jmVf965g3PIjWjrc+t+/OJBcWb4=
+  file_glob: true
+  file: "dist/kit-ganglia*.tar.bz2"
+  skip_cleanup: true
+  on:
+    all_branches: true
+    tags: true
